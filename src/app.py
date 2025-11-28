@@ -1,8 +1,15 @@
 """Streamlit dashboard for Fitness Center Assistant."""
 
+import sys
+from pathlib import Path
+
+# Add project root to Python path for imports to work on Streamlit Cloud
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import streamlit as st
 import pandas as pd
-from pathlib import Path
 import tempfile
 
 from src.data import plans, class_schedule, promo_codes
@@ -34,10 +41,19 @@ if 'schedule_notes' not in st.session_state:
 
 def load_logo():
     """Load and display Pacific logo in sidebar."""
-    logo_path = Path("assets/pacific_logo.png")
-    if logo_path.exists():
-        st.sidebar.image(str(logo_path), use_container_width=True, alt="University of the Pacific")
-    else:
+    # Try multiple possible logo file names
+    logo_paths = [
+        Path("assets/pacific_logo.png"),
+        Path("assets/UOP-Logo.jpg"),
+        Path("assets/pacific_logo.jpg"),
+    ]
+    logo_found = False
+    for logo_path in logo_paths:
+        if logo_path.exists():
+            st.sidebar.image(str(logo_path), use_container_width=True, alt="University of the Pacific")
+            logo_found = True
+            break
+    if not logo_found:
         st.sidebar.markdown("### 🏋️ University of the Pacific")
 
 
