@@ -41,18 +41,25 @@ if 'schedule_notes' not in st.session_state:
 
 def load_logo():
     """Load and display Pacific logo in sidebar."""
-    # Try multiple possible logo file names
+    # Get project root directory
+    project_root = Path(__file__).parent.parent
+    
+    # Try multiple possible logo file names (relative to project root)
     logo_paths = [
-        Path("assets/pacific_logo.png"),
-        Path("assets/UOP-Logo.jpg"),
-        Path("assets/pacific_logo.jpg"),
+        project_root / "assets" / "pacific_logo.png",
+        project_root / "assets" / "UOP-Logo.jpg",
+        project_root / "assets" / "pacific_logo.jpg",
     ]
     logo_found = False
     for logo_path in logo_paths:
         if logo_path.exists():
-            st.sidebar.image(str(logo_path), use_container_width=True, alt="University of the Pacific")
-            logo_found = True
-            break
+            try:
+                st.sidebar.image(str(logo_path), use_container_width=True)
+                logo_found = True
+                break
+            except Exception:
+                # If image fails to load, continue to next option
+                continue
     if not logo_found:
         st.sidebar.markdown("### 🏋️ University of the Pacific")
 
